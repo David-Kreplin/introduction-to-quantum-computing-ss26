@@ -72,7 +72,7 @@ def matrix_to_latex(matrix, label=None):
     if label is None:
         display(Math(f"{latex_str}"))
     else:
-        display(Math(f"{label}{latex_str}"))
+        display(Math(f"\\text{{ {label} }}{latex_str}"))
 
 
 def sv_compute(quantum_circuit: QuantumCircuit) -> Statevector:
@@ -118,7 +118,7 @@ def sv_vector(quantum_circuit: QuantumCircuit, label: str = None):
     if label is None:
         return Math(latex_str)
     else:
-        return Math(f"{label}{latex_str}")
+        return Math(f"\\text{{ {label} }}{latex_str}")
 
 
 def sv_dict(quantum_circuit: QuantumCircuit) -> dict:
@@ -146,7 +146,7 @@ def sv_state(quantum_circuit: QuantumCircuit, label: str = None):
     if label is None:
         return Math(statevector.draw("latex_source"))
     else:
-        return Math(f"{label}{statevector.draw('latex_source')}")
+        return Math(f"\\text{{ {label} }}{statevector.draw('latex_source')}")
 
 
 def sv_probs(quantum_circuit: QuantumCircuit, label: str = None):
@@ -155,9 +155,10 @@ def sv_probs(quantum_circuit: QuantumCircuit, label: str = None):
     probs = np.square(np.abs(vector))
 
     if label is not None:
-        print(label)
+        latex_str = f"\\text{{ {label} }}" + "\\begin{array}{rcl}"
+    else:
+        latex_str = r"\begin{array}{rcl}"
 
-    latex_str = "\\begin{array}{rcl}"
     for i, p in enumerate(probs):
         latex_str += f"p_{{{i:0{quantum_circuit.num_qubits}b}}}" + r" & = & "
         latex_str += format_complex(p) + " \\\\[1mm]"

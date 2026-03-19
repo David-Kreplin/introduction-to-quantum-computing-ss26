@@ -1,6 +1,4 @@
 import numpy as np
-from IPython.display import display, Math
-
 from qiskit import QuantumCircuit
 from qiskit_ibm_runtime import SamplerV2
 from qiskit_aer import Aer
@@ -96,23 +94,6 @@ def sample_from_circuit(quantum_circuit: QuantumCircuit, num_shots: int) -> dict
     else:
         raise ValueError("Only default register names are supported.")
     return shots_dict
-
-def measure_quantum_circuit(quantum_circuit: QuantumCircuit, latex: bool = True):
-    """Measures a quantum circuit a single time and displays the resulting state in LaTeX format.
-    
-    Args:
-        quantum_circuit (QuantumCircuit): The quantum circuit to be measured.    
-        latex (bool): Whether to display the result in LaTeX format, defaults to True.
-            Otherwise, the result will be return as a bitstring.
-    """
-    result_dict = sample_from_circuit(quantum_circuit.measure_all(inplace=False), num_shots=1)
-    bitstring = list(result_dict.keys())[0]
-    
-    if latex:
-        latex_str = "\\ket{" + bitstring + "}"
-        return display(Math(f"{latex_str}"))
-    else:
-        return bitstring
 
 
 def measure_to_probability(measurements: dict) -> dict:

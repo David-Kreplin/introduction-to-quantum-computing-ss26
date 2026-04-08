@@ -20,20 +20,20 @@ def print_grover_states(quantum_circuit, num_data_qubits, cutoff=None):
     num_qubits = quantum_circuit.num_qubits
     statevector = sv_array(quantum_circuit)
     if cutoff is None:
-        print("Gefundene Basiszustände mit Amplituden ungleich Null:")
+        print("Found basis states with non-zero amplitudes:")
         cutoff = 1e-10
     else:
-        print(f"Gefundene Basiszustände mit Amplituden größer als {cutoff}:")
+        print(f"Found basis states with amplitudes greater than {cutoff}:")
     for i, amplitude in enumerate(statevector):
         if np.abs(amplitude) > cutoff:
             bitstr = format(i, f"0{num_qubits}b")
             if num_qubits != num_data_qubits:
                 print(
-                    f"{bitstr[:num_data_qubits]} {bitstr[num_data_qubits:]}: {np.real(amplitude):5.2f}  Wahrscheinlichkeit: {np.square(np.real(amplitude)):5.2f}"
+                    f"{bitstr[:num_data_qubits]} {bitstr[num_data_qubits:]}: {np.real(amplitude):5.2f}  Probability: {np.square(np.real(amplitude)):5.2f}"
                 )
             else:
                 print(
-                    f"{bitstr}: {np.real(amplitude):5.2f}  Wahrscheinlichkeit: {np.square(np.real(amplitude)):5.2f}"
+                    f"{bitstr}: {np.real(amplitude):5.2f}  Probability: {np.square(np.real(amplitude)):5.2f}"
                 )
 
 
@@ -111,39 +111,39 @@ def oracle_sudoku():
     """
     qc_compute = QuantumCircuit(12)
 
-    # Ancilla 1 (Qubit 4) überprüft q0q1 == 01
+    # Ancilla 1 (Qubit 4) checks q0q1 == 01
     qc_compute.x(0)
     qc_compute.ccx(0, 1, 4)
     qc_compute.x(0)
 
-    # Ancilla 2 (Qubit 5) überprüft Qubit q2q3 == 01
+    # Ancilla 2 (Qubit 5) checks q2q3 == 01
     qc_compute.x(2)
     qc_compute.ccx(2, 3, 5)
     qc_compute.x(2)
 
-    # Ancilla 3 (Qubit 6) überprüft Qubit q0q1 == 11
+    # Ancilla 3 (Qubit 6) checks q0q1 == 11
     qc_compute.ccx(0, 1, 6)
 
-    # Ancilla 4 (Qubit 7) überprüft Qubit q2q3 == 11
+    # Ancilla 4 (Qubit 7) checks q2q3 == 11
     qc_compute.ccx(2, 3, 7)
 
-    # Ancilla 5 (Qubit 8) überprüft q0 == q2
+    # Ancilla 5 (Qubit 8) checks q0 == q2
     qc_compute.cx(0, 8)
     qc_compute.cx(2, 8)
     qc_compute.x(8)
 
-    # Ancilla 6 (Qubit 9) überprüft q1 == q3
+    # Ancilla 6 (Qubit 9) checks q1 == q3
     qc_compute.cx(1, 9)
     qc_compute.cx(3, 9)
     qc_compute.x(9)
 
-    # Check ob beide Gleichheitsprüfungen (Ancilla 5 und 6) erfüllt sind
+    # Check whether both equality checks (Ancilla 5 and 6) are satisfied
     qc_compute.ccx(8, 9, 10)
 
-    # Alle Abfragen invertieren -> Richtige Lösung wenn alle 1
+    # Invert all query results -> correct solution when all are 1
     qc_compute.x([4, 5, 6, 7, 10])
 
-    # mehrfach kontrolliertes CNOT mit dem Orakelqubit als Ziel
+    # Multi-controlled CNOT with the oracle qubit as the target
     qc_compute.mcx([4, 5, 6, 7, 10], 11)
 
     qc_oracle = QuantumCircuit(12)
